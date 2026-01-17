@@ -1,11 +1,6 @@
-<media
-omitted>
-Media
-omitted
 .
 *
 .
-Media Omitted
 ..
 ...
 ?
