@@ -7,6 +7,10 @@ import seaborn as sns
 
 st.sidebar.title("WhatsApp Chat Analyzer")
 
+# Persist the analysis view state so the UI doesn't reset when interacting
+if "show_analysis" not in st.session_state:
+    st.session_state.show_analysis = False
+
 uploaded_file = st.sidebar.file_uploader("Choose a file")
 
 
@@ -24,8 +28,10 @@ if uploaded_file is not None:
     user_list.insert(0, "Overall")
     selected_user = st.sidebar.selectbox("Show analysis wrt", user_list)
 
-    show_analysis = st.sidebar.button("Show Analysis")
-    if show_analysis:
+    if st.sidebar.button("Show Analysis"):
+        st.session_state.show_analysis = True
+
+    if st.session_state.show_analysis:
         # FIXED LINE: We now catch THREE variables instead of two
         num_messages, words, num_media_messages, num_links = helper.fetch_stats(selected_user, df)
 
