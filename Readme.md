@@ -90,4 +90,16 @@ A powerful tool to analyze WhatsApp chat exports, visualize activity, and perfor
 ---
 
 ## Screenshots / Demo
+<img width="954" height="410" alt="image" src="https://github.com/user-attachments/assets/e7bd4441-0331-4bfc-9846-ca8991555134" />
+Wordcloud
+<img width="949" height="408" alt="image" src="https://github.com/user-attachments/assets/302444a5-ea83-4718-be8a-e494d95b8bf8" />
+HeatMap
+<img width="950" height="403" alt="image" src="https://github.com/user-attachments/assets/a56822de-7c76-4236-8304-4c2707ddb798" />
+Sentiment Analysis 
+<img width="954" height="395" alt="image" src="https://github.com/user-attachments/assets/8a9231a4-1c5a-42e9-88ed-72990907b56c" />
+
+
+
+
+
 
