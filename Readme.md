@@ -1,19 +1,6 @@
 WhatsApp Chat Analyzer
 A powerful tool to analyze WhatsApp chat exports, visualize activity, and perform sentiment analysis with a beautiful, modern UI.
 
-Features
-Upload and preprocess WhatsApp chat exports
-Visualize message statistics (total messages, words, media, links)
-Monthly and weekly activity timelines
-Most active users and word clouds
-Emoji analysis and most common words
-
-# WhatsApp Chat Analyzer
-
-A powerful tool to analyze WhatsApp chat exports, visualize activity, and perform sentiment analysis with a beautiful, modern UI.
-
----
-
 ## 🚀 Features
 
 - Upload and preprocess WhatsApp chat exports
