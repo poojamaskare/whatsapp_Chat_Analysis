@@ -9,26 +9,23 @@ st.sidebar.title("WhatsApp Chat Analyzer")
 
 uploaded_file = st.sidebar.file_uploader("Choose a file")
 
+
 if uploaded_file is not None:
     bytes_data = uploaded_file.getvalue()
     data = bytes_data.decode("utf-8")
-    
-    # REMOVED st.text(data) so we only see the clean table
-    
     # Preprocess and display
     df = preprocessor.preprocess(data)
     st.dataframe(df)
 
-    #fetch unique users
-   # fetch unique users
+    # fetch unique users
     user_list = df['user'].unique().tolist()
     user_list.remove('group_notification')
     user_list.sort()
     user_list.insert(0, "Overall")
-    selected_user= st.sidebar.selectbox("Show analysis wrt", user_list)
+    selected_user = st.sidebar.selectbox("Show analysis wrt", user_list)
 
-    if st.sidebar.button("Show Analysis"):
-        
+    show_analysis = st.sidebar.button("Show Analysis")
+    if show_analysis:
         # FIXED LINE: We now catch THREE variables instead of two
         num_messages, words, num_media_messages, num_links = helper.fetch_stats(selected_user, df)
 
@@ -53,7 +50,7 @@ if uploaded_file is not None:
         st.pyplot(fig)
         st.divider()
 
-        #Activity map
+        # Activity map
         st.subheader("Activity Map")
         col1, col2 = st.columns(2)
         with col1:
@@ -71,7 +68,7 @@ if uploaded_file is not None:
             plt.xticks(rotation='vertical')
             st.pyplot(fig)
         st.divider()
-        
+
         if selected_user == 'Overall':
             st.subheader("Most Busy Users")
             x, new_df = helper.most_busy_users(df)
@@ -84,7 +81,7 @@ if uploaded_file is not None:
             with col2:
                 st.dataframe(new_df)
             st.divider()
-        
+
         # WordCloud
         st.subheader("WordCloud")
         df_wc = helper.create_wordcloud(selected_user, df)
@@ -107,16 +104,21 @@ if uploaded_file is not None:
         st.subheader("Emoji Analysis")
         emoji_df = helper.emoji_helper(selected_user, df)
         if not emoji_df.empty:
-            fig, ax = plt.subplots()
-            top5 = emoji_df.head(5)
-            ax.pie(
-                top5['count'],
-                labels=top5['emoji'],
-                autopct="%0.2f%%",
-                startangle=90
-            )
-            ax.set_title("Top 5 Emojis Used")
-            st.pyplot(fig)
+            col1, col2 = st.columns(2)
+            with col1:
+                st.dataframe(emoji_df.head(20))
+            with col2:
+                fig, ax = plt.subplots()
+                top5 = emoji_df.head(5)
+                ax.pie(
+                    top5['count'],
+                    labels=top5['emoji'],
+                    autopct="%0.2f%%",
+                    startangle=90,
+                    textprops={'fontsize': 16}
+                )
+                ax.set_title("Top 5 Emojis Used")
+                st.pyplot(fig)
         else:
             st.write("No emojis found")
         st.divider()
@@ -129,39 +131,31 @@ if uploaded_file is not None:
         st.pyplot(fig)
         st.divider()
 
-# --- Message Sentiment Inspector (With Search Functionality) ---
-st.title("Message Sentiment ")
-        
+        # --- Message Sentiment Inspector (With Search Functionality) ---
+        st.title("Message Sentiment ")
         # 1. Prepare the data (Filter out system messages)
-if selected_user != 'Overall':
+        if selected_user != 'Overall':
             df_view = df[df['user'] == selected_user]
-else:
+        else:
             df_view = df
-df_view = df_view[df_view['message'] != '<Media omitted>\n']
-df_view = df_view[df_view['user'] != 'group_notification']
-        
+        df_view = df_view[df_view['message'] != '<Media omitted>\n']
+        df_view = df_view[df_view['user'] != 'group_notification']
         # 2. Add a Search Box
-        # Users can type here to filter the dropdown list
-search_query = st.text_input("Search for a specific message:")
-        
+        search_query = st.text_input("Search for a specific message:")
         # 3. Filter the options based on the search
-all_messages = df_view['message'].unique()
-        
-if search_query:
+        all_messages = df_view['message'].unique()
+        if search_query:
             # Only keep messages that contain the search text (case insensitive)
             filtered_messages = [msg for msg in all_messages if search_query.lower() in msg.lower()]
-else:
+        else:
             # If search is empty, show all messages
             filtered_messages = all_messages
-
         # 4. Display the Dropdown
-if len(filtered_messages) > 0:
+        if len(filtered_messages) > 0:
             selected_message = st.selectbox("Select a message to analyze:", filtered_messages)
-            
-if st.button("Analyze This Message"):
+            if st.button("Analyze This Message"):
                 label, scores = helper.score_message(selected_message)
                 st.header(f"Sentiment: {label}")
-                
                 col1, col2, col3, col4 = st.columns(4)
                 with col1:
                     st.metric("Positive", scores['pos'])
@@ -171,8 +165,8 @@ if st.button("Analyze This Message"):
                     st.metric("Neutral", scores['neu'])
                 with col4:
                     st.metric("Compound", scores['compound'])
-else:
-            st.warning("No messages found matching your search.")
+        else:
+            st.info("Upload your WhatsApp chat export to see the analysis.")
         
 
 
